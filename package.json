@@ -1,0 +1,14 @@
+{
+  "name": "paytm-edge-node",
+  "version": "1.0.0",
+  "description": "Ultra-lightweight Paytm Gateway Status Edge Node",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "keywords": ["paytm", "edge", "gateway", "cloudflare", "vercel"],
+  "author": "Master",
+  "license": "MIT"
+}
