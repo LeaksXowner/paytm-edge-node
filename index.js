@@ -56,7 +56,7 @@ function jsonResponse(data, status = 200) {
 
 export async function handleRequest(request, env = {}) {
   const url = new URL(request.url);
-  const path = url.pathname;
+  const path = url.pathname.replace(/^\/api/, '');
 
   // CORS Preflight
   if (request.method === 'OPTIONS') {
@@ -70,7 +70,10 @@ export async function handleRequest(request, env = {}) {
   }
 
   // Health / Ping check
-  if (path === '/health' || path === '/ping') {
+  let mid = url.searchParams.get('mid') || url.searchParams.get('MID');
+  let oid = url.searchParams.get('oid') || url.searchParams.get('order_id') || url.searchParams.get('ORDERID');
+
+  if (path === '/health' || path === '/ping' || ((path === '' || path === '/') && !mid && !oid)) {
     const nodeName = env.NODE_NAME || (typeof process !== 'undefined' && process.env?.NODE_NAME) || 'edge-node';
     return jsonResponse({
       status: 'ok',
@@ -78,10 +81,6 @@ export async function handleRequest(request, env = {}) {
       time: new Date().toISOString()
     });
   }
-
-  // Parse MID and OID
-  let mid = url.searchParams.get('mid') || url.searchParams.get('MID');
-  let oid = url.searchParams.get('oid') || url.searchParams.get('order_id') || url.searchParams.get('ORDERID');
 
   if (request.method === 'POST') {
     try {
@@ -148,6 +147,7 @@ export async function handleRequest(request, env = {}) {
     return jsonResponse({
       STATUS: 'ERROR',
       MSG: 'Paytm Gateway Error',
+      DETAIL: gatewayResult.lastErr ? gatewayResult.lastErr.slice(0, 200) : 'Akamai WAF or Gateway rejection',
       NODE: nodeName,
       WORKER_IPV4: ips.ipv4,
       WORKER_IPV6: ips.ipv6

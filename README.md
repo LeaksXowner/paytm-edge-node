@@ -56,9 +56,13 @@ You can deploy this worker multiple times under different names on your Cloudfla
 3. Entrypoint: `index.js`.
 4. Deploy instantly.
 
-### Option 4: Supabase Edge Functions (AWS Mumbai `ap-south-1`)
-1. Create a free project in Supabase located in **Mumbai (ap-south-1)**.
-2. Run `supabase functions deploy status --no-verify-jwt`.
+### Option 4: Supabase Edge Functions
+1. Go to your Supabase project dashboard → **Edge Functions** → **Create a new function**.
+2. Name it `paytm`.
+3. Paste the contents of [`supabase/functions/paytm/index.ts`](supabase/functions/paytm/index.ts).
+4. Turn **OFF** "Enforce JWT Verification" (so public requests can reach it without `Bearer anon-key`).
+5. Your function URL will be:
+   `https://<project-ref>.supabase.co/functions/v1/paytm`
 
 ---
 
